@@ -45,4 +45,10 @@
        state: started
        name: nginx
        enabled: yes
+
+        handlers:
+       - name: Restart nginx
+         service:
+           name: nginx
+           state: restarted
        
