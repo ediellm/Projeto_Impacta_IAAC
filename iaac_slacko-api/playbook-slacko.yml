@@ -1,5 +1,5 @@
 ---
-- hosts: 10.0.0.11
+- hosts: server
   remote_user: vagrant
   become: yes
   tasks:
