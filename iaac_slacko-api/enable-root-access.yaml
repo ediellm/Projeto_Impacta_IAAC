@@ -1,0 +1,6 @@
+---
+- hosts: 10.0.0.11
+  remote_user: vagrant
+  tasks:
+    - name: Enable root login
+      shell: sudo cp ~/.ssh/authorized_keys /root/.ssh/
