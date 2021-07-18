@@ -1,0 +1,33 @@
+---
+##########################################
+### D A D O S
+##########################################
+
+vg_data:  "vg_data"
+vg_disk_data: "/dev/sdb"
+dev_map_data:  "/dev/mapper/{{ vg_data }}"
+lv_data: 'lv_mongo_data'  #lv name
+m_p_data: '/mongo_data'     #mount point
+
+lv_data_size: '9G'          #lv size
+
+
+##########################################
+###  I N D I C E
+##########################################
+
+vg_index:  "vg_index"
+vg_disk_index: "/dev/sdc"
+dev_map_index:  "/dev/mapper/{{ vg_index }}"
+lv_index: 'lv_mongo_index'  #lv name
+m_p_index: '/mongo_index'     #mount point
+
+lv_index_size: '9G'          #lv size
+
+##########################################
+### F S T A B 
+##########################################
+
+f_o: 'rw,noatime,nodiratime' #fstab option
+d_u: '1'  #dump
+p_n: '2'  #passno

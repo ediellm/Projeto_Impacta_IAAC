@@ -1,0 +1,86 @@
+---
+- name: Criar VG de dados
+  lvg:
+    vg:         "{{ vg_data }}"
+    pvs:        "{{ vg_disk_data }}"
+    vg_options: --autobackup y
+  become:       true
+
+- name: Criar Logical Volume de dados
+  lvol:
+    vg:       "{{ vg_data }}"
+    lv:       "{{ lv_data }}"
+    size:     "{{ lv_data_size }}"
+    resizefs: yes
+  become:     true
+
+
+- name: Criar XFS FS no logical volume de dados
+  filesystem:
+    fstype:   xfs
+    dev:      "{{ dev_map_data }}-{{ lv_data }}"
+  become:     true
+
+
+- name: Criar diretorios de dados
+  file:
+    path:     "{{ m_p_data }}"
+    state:    directory
+  become:     true
+
+
+- name: Adicionar o diretorio de dados no /etc/fstab
+  mount:
+    src:      "{{ dev_map_data }}-{{ lv_data }}"
+    path:     "{{ m_p_data }}"
+    fstype:   xfs
+    opts:     "{{ f_o }}"
+    dump:     "{{ d_u }}"
+    passno:   "{{ p_n }}"
+    state:    mounted
+    backup:   yes
+  become:     true
+
+
+- name: Criar VG de indice
+  lvg:
+    vg:         "{{ vg_index }}"
+    pvs:        "{{ vg_disk_index }}"
+    vg_options: --autobackup y
+  become:       true
+
+- name: Criar Logical Volume de indice
+  lvol:
+    vg:       "{{ vg_index }}"
+    lv:       "{{ lv_index }}"
+    size:     "{{ lv_index_size }}"
+    resizefs: yes
+  become:     true
+
+
+- name: Criar XFS FS no logical volume de indice
+  filesystem:
+    fstype:   xfs
+    dev:      "{{ dev_map_index }}-{{ lv_index }}"
+  become:     true
+
+
+- name: Criar diretorios de indice
+  file:
+    path:     "{{ m_p_index }}"
+    state:    directory
+  become:     true
+
+
+- name: Adicionar o diretorio de indice no /etc/fstab
+  mount:
+    src:      "{{ dev_map_index }}-{{ lv_index }}"
+    path:     "{{ m_p_index }}"
+    fstype:   xfs
+    opts:     "{{ f_o }}"
+    dump:     "{{ d_u }}"
+    passno:   "{{ p_n }}"
+    state:    mounted
+    backup:   yes
+  become:     true
+

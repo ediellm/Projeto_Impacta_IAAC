@@ -1,0 +1,7 @@
+---
+- name: Iniciando a instalação do Mongo DB
+  remote_user: vagrant
+  become: yes
+  hosts: 10.0.0.11
+  roles:
+          - ansible_mongo

@@ -1,0 +1,11 @@
+---
+# handlers file for ansible_mongo
+- name: start_dth
+  service: 
+    name: disable-transparent-hugepages
+    state: started
+
+- name: start_mongo
+  service: 
+    name: mongod
+    state: started

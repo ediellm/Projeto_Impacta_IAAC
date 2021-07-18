@@ -1,0 +1,11 @@
+---
+# tasks file for ansible_mongo
+- name: Incluindo a task de configuracao do Sistema Operacional
+  include_tasks: so.yml
+
+- name: Incluindo a task de configuracao dos diretórios de dados e indice
+  include_tasks: discos.yml
+
+- name: Incluindo a task de instalacao do mongodb
+  include_tasks: mongo.yml
+

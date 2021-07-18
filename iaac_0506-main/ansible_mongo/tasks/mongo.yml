@@ -1,0 +1,42 @@
+---
+# tasks file for mongo-org-4.2
+- name: Copiando o arquivo de repositorio do Mongo DB
+  copy: src=files/mongodb-org-4.2.repo dest=/etc/yum.repos.d/mongodb-org-4.2.repo
+
+- name: Instalando o Mongo DB
+  package: 
+    name=mongodb-org
+    state=latest
+
+- name: Removendo o arquivo de configuracao default
+  file:
+    path: /etc/mongod.conf
+    state: absent
+
+- name: Alterando a permissão do filesystem onde sera armazenado o banco de dados
+  file: 
+    path: /mongo_data
+    owner: mongod
+    group: mongod
+    mode: 0700
+    state: directory
+    recurse: yes
+
+- name: Alterando a permissão do filesystem onde sera armazenado os indices do banco de dados
+  file: 
+    path: /mongo_index
+    owner: mongod
+    group: mongod
+    mode: 0700
+    state: directory
+    recurse: yes
+
+- name: Copiando o arquivo de configuracao alterado
+  template:
+    src: files/mongod.conf
+    dest: /etc/mongod.conf
+    owner: mongod
+    group: mongod
+    mode: 0644
+  notify:
+    - start_mongo

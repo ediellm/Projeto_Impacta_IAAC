@@ -1,0 +1,97 @@
+- name:  Set vm.dirty_ratio 
+  sysctl:
+    name: vm.dirty_ratio
+    value: '15'
+    state: present
+
+- name:  Set vm.dirty_background_ratio 
+  sysctl:
+    name: vm.dirty_background_ratio
+    value: '5'
+    state: present
+
+- name: Set vm.swappiness
+  sysctl:
+    name: vm.swappiness
+    value: '1'
+    state: present
+
+- name: Set net.core.somaxconn 
+  sysctl:
+    name: net.core.somaxconn
+    value: '4096'
+    state: present
+
+- name: Set net.ipv4.tcp_fin_timeout
+  sysctl:
+    name: net.ipv4.tcp_fin_timeout
+    value: '30'
+    state: present
+
+- name: net.ipv4.tcp_keepalive_intvl
+  sysctl:
+    name: net.ipv4.tcp_keepalive_intvl
+    value: '30'
+    state: present
+
+- name: net.ipv4.tcp_keepalive_time
+  sysctl:
+    name: net.ipv4.tcp_keepalive_time
+    value: '120'
+    state: present
+
+- name: net.ipv4.tcp_max_syn_backlog 
+  sysctl:
+    name: net.ipv4.tcp_max_syn_backlog 
+    value: '4096'
+    state: present
+
+- name: vm.zone_reclaim_mode
+  sysctl:
+    name: vm.zone_reclaim_mode
+    value: '0'
+    state: present
+    reload: yes
+
+- name: Copiando o arquivo de ulimit do mongod
+  template:
+    src: files/mongodb.conf
+    dest: /etc/security/limits.d/mongod.conf
+
+- name: Verificando se arquivo existe
+  stat:
+    path: /etc/init.d/disable-transparent-hugepages
+  register: stat_result
+
+- name: Transferir arquivo para desabilitar huge pages
+  template:
+    src: files/disable-transparent-hugepages
+    dest: /etc/init.d/disable-transparent-hugepages
+    mode: 0755
+  when: stat_result.stat.exists == False
+
+- name: Configurar arquivo para executar no boot
+  service:
+    name: disable-transparent-hugepages
+    enabled: yes
+  notify:
+    - start_dth
+
+- name: Criar diretorio tuned
+  file:
+    path: /etc/tuned/no-thp
+    state: directory
+
+- name: Verificando se arquivo existe
+  stat:
+    path: /etc/tuned/no-thp/tuned.conf
+  register: tuned_result
+
+- name: Copiando o arquivo tuned
+  template:
+    src: files/tuned.conf
+    dest: /etc/tuned/no-thp/tuned.conf
+  when: tuned_result.stat.exists == False
+
+- name: Habilitando o profile criado
+  shell: tuned-adm profile no-thp
